@@ -61,7 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/main1.html").access("hasRole('abc')")
 
                 // 自定义access方法
-                .anyRequest().access("@myServiceImpl.hasPermission(reqquest,authentication)")
+//                .anyRequest().access("@myServiceImpl.hasPermission(reqquest,authentication)")
                 // 所有请求都必须认证才能访问，必须登陆
                 .anyRequest().authenticated();
 

@@ -1,5 +1,6 @@
 package com.wxf.springsecuritydemo.controller;
 
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,8 @@ public class LoginController {
         return "/login.html";
     }*/
 
+    // 开启角色访问控制
+    @Secured("ROLE_abc")
     @PostMapping("/toMain")
     public String main() {
         return "redirect:main.html";
