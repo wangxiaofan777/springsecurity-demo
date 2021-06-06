@@ -89,6 +89,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 设置自定义登录逻辑
                 .userDetailsService(userDetailsService);
 
+        // 退出
+        http.logout()
+                // 退出URL
+                .logoutUrl("/logout")
+                // 退出跳转页
+                .logoutSuccessUrl("/login.html");
+
         // 异常处理
         http.exceptionHandling()
                 .accessDeniedHandler(new MyAccessDeniedHandler());
