@@ -1,4 +1,10 @@
 #spring:
 #  mvc:
 #    servlet:
-#      path: /servlet # ÅäÖÃServletÂ·¾¶
+#      path: /servlet # ï¿½ï¿½ï¿½ï¿½ServletÂ·ï¿½ï¿½
+spring:
+  datasource:
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysq://10.1.100.20:3306/test

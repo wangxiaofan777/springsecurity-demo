@@ -1,18 +1,31 @@
 package com.wxf.springsecuritydemo.security.config;
 
 import com.wxf.springsecuritydemo.handler.MyAccessDeniedHandler;
+import com.wxf.springsecuritydemo.service.UserDetailsServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Component;
+
+import javax.sql.DataSource;
 
 /**
  * Security配置
  */
 @Component
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private DataSource dataSource;
+    @Autowired
+    private PersistentTokenRepository persistentTokenRepository;
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -65,8 +78,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 所有请求都必须认证才能访问，必须登陆
                 .anyRequest().authenticated();
 
+        // 记住我
+        http.rememberMe()
+                // 配置数据有
+                .tokenRepository(persistentTokenRepository)
+                // 设置参数
+                .rememberMeParameter("rememberMe")
+                // 超时时间
+                .tokenValiditySeconds(60)
+                // 设置自定义登录逻辑
+                .userDetailsService(userDetailsService);
+
         // 异常处理
-        http.exceptionHandling().accessDeniedHandler(new MyAccessDeniedHandler());
+        http.exceptionHandling()
+                .accessDeniedHandler(new MyAccessDeniedHandler());
 
         // 关闭跨站请求伪造
         http.csrf().disable();
@@ -76,5 +101,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+        // 自动建表
+        jdbcTokenRepository.setCreateTableOnStartup(true);
+        // 配置数据源
+        jdbcTokenRepository.setDataSource(dataSource);
+        return jdbcTokenRepository;
     }
 }
