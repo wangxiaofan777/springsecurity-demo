@@ -6,7 +6,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 
 
 @SpringBootApplication
-@EnableGlobalMethodSecurity(securedEnabled = true) // 开启SpringSecurity访问控制
+// 开启SpringSecurity访问控制, 开启前置判断
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SpringsecurityDemoApplication {
 
     public static void main(String[] args) {
